@@ -1,0 +1,75 @@
+﻿using RestApi.Core.Models;
+
+namespace RestApi.Core.Astratte
+{
+    public abstract class ServizioBase<TEntity, TDto>
+        where TDto : class
+        where TEntity : class
+    {
+        protected readonly Dictionary<int, TEntity> db;
+        protected int _id = 0;
+        protected ServizioBase(Dictionary<int, TEntity> archivio)
+        {
+            db = archivio;
+            _id = db.Keys.Any() ? db.Keys.Max() + 1 : 0;
+        }
+
+        public virtual TDto OttieniPerId(int id)
+        {
+            if (!db.TryGetValue(id, out var entita))
+            {
+                return null;
+            }
+            return MapToDto(entita);
+        }
+        /// <summary>
+        /// recupero i data paginati
+        /// </summary>
+        /// <param name="numeroPagina"></param>
+        /// <param name="dimensionePagina"></param>
+        /// <returns></returns>
+        public virtual RisultatoPaginato<TDto> OttieniTutti(int numeroPagina = 1, int dimensionePagina = 5)
+        {
+            var totaleElementi = db.Count;
+            var data = db.Values
+                        .Skip((numeroPagina - 1) * dimensionePagina)
+                        .Take(dimensionePagina)
+                        .ToList();
+
+            var dtos = data.Select(MapToDto).ToList();
+
+            RisultatoPaginato<TDto> risultatoPaginato = new RisultatoPaginato<TDto>
+            {
+                Elementi = dtos,
+                NumeroPagina = numeroPagina,
+                DimensionePagina = dimensionePagina,
+                TotaleElementi = totaleElementi,
+                TotalePagine = totaleElementi / dimensionePagina
+            };
+
+            return risultatoPaginato;
+
+        }
+
+        protected virtual TDto CreaData(TDto dto)
+        {
+            var data = MapToData(dto);
+            var prossimoid = _id++;
+            ImpostaIdEntita(data, prossimoid);
+
+            db[prossimoid] = data;
+
+            return MapToDto(data);
+        }
+
+
+        /// <summary>
+        /// Mappa un'entitia nel suo Dto corrispondente
+        /// </summary>
+        /// <param name="entita"></param>
+        /// <returns></returns>
+        protected abstract TDto MapToDto(TEntity entita);
+        protected abstract TEntity MapToData(TDto data);
+        protected abstract void ImpostaIdEntita(TEntity entita, int id);
+    }
+}
