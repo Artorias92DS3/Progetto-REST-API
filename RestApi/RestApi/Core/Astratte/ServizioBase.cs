@@ -20,8 +20,10 @@ namespace RestApi.Core.Astratte
             {
                 return null;
             }
-            return MapToDto(entita);
+            return MapInDto(entita);
         }
+        
+        
         /// <summary>
         /// recupero i data paginati
         /// </summary>
@@ -36,7 +38,7 @@ namespace RestApi.Core.Astratte
                         .Take(dimensionePagina)
                         .ToList();
 
-            var dtos = data.Select(MapToDto).ToList();
+            var dtos = data.Select(MapInDto).ToList();
 
             RisultatoPaginato<TDto> risultatoPaginato = new RisultatoPaginato<TDto>
             {
@@ -53,13 +55,13 @@ namespace RestApi.Core.Astratte
 
         protected virtual TDto CreaData(TDto dto)
         {
-            var data = MapToData(dto);
+            var data = MapInData(dto);
             var prossimoid = _id++;
             ImpostaIdEntita(data, prossimoid);
 
             db[prossimoid] = data;
 
-            return MapToDto(data);
+            return MapInDto(data);
         }
 
 
@@ -68,8 +70,8 @@ namespace RestApi.Core.Astratte
         /// </summary>
         /// <param name="entita"></param>
         /// <returns></returns>
-        protected abstract TDto MapToDto(TEntity entita);
-        protected abstract TEntity MapToData(TDto data);
+        protected abstract TDto MapInDto(TEntity entita);
+        protected abstract TEntity MapInData(TDto data);
         protected abstract void ImpostaIdEntita(TEntity entita, int id);
     }
 }

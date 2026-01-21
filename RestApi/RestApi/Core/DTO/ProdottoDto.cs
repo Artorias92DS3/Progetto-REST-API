@@ -7,7 +7,7 @@ namespace RestApi.Core.DTO
     /// </summary>
     public class ProdottoDto
     {
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "Il nome del prodotto è obbligatorio")]
         [StringLength(200, MinimumLength = 3, ErrorMessage = "Il nome deve essere compreso tra 3 e 200 caratteri")]
