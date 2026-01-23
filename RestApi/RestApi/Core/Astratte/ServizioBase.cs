@@ -53,7 +53,7 @@ namespace RestApi.Core.Astratte
 
         }
 
-        protected virtual TDto CreaData(TDto dto)
+        public virtual TDto CreaData(TDto dto)
         {
             var data = MapInData(dto);
             var prossimoid = _id++;
@@ -62,6 +62,31 @@ namespace RestApi.Core.Astratte
             db[prossimoid] = data;
 
             return MapInDto(data);
+        }
+
+        /// <summary>
+        /// Aggiorna un'entità esistente
+        /// </summary>
+        public virtual TDto? Aggiorna(int id, TDto dto)
+        {          
+
+            if (!db.ContainsKey(id))
+                return null;
+
+            var entita = MapInData(dto);
+            ImpostaIdEntita(entita, id);
+
+            db[id] = entita;
+
+            return MapInDto(entita);
+        }
+
+        /// <summary>
+        /// Elimina un'entità tramite il suo identificativo
+        /// </summary>
+        public bool Elimina(int id)
+        {
+            return db.Remove(id);
         }
 
 
