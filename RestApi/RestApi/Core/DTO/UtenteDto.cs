@@ -7,7 +7,7 @@ namespace RestApi.Core.DTO
     /// </summary>
     public class UtenteDto
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [Required(ErrorMessage = "Il nome è obbligatorio")]
         [StringLength(100, MinimumLength = 2, ErrorMessage = "Il nome deve essere compreso tra 2 e 100 caratteri")]

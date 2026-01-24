@@ -8,12 +8,21 @@ namespace RestApi.Core.Astratte
     {
         protected readonly Dictionary<int, TEntity> db;
         protected int _id = 0;
+
+        /// <summary>
+        /// Costruttore del servizio base
+        /// </summary>
+        /// <param name="archivio"></param>
         protected ServizioBase(Dictionary<int, TEntity> archivio)
         {
             db = archivio;
             _id = db.Keys.Any() ? db.Keys.Max() + 1 : 0;
         }
-
+        /// <summary>
+        /// recupero data per ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public virtual TDto OttieniPerId(int id)
         {
             if (!db.TryGetValue(id, out var entita))
@@ -22,8 +31,8 @@ namespace RestApi.Core.Astratte
             }
             return MapInDto(entita);
         }
-        
-        
+
+
         /// <summary>
         /// recupero i data paginati
         /// </summary>
@@ -39,20 +48,25 @@ namespace RestApi.Core.Astratte
                         .ToList();
 
             var dtos = data.Select(MapInDto).ToList();
-
+            var totalePagine = (int)Math.Ceiling(totaleElementi / (double)dimensionePagina);
             RisultatoPaginato<TDto> risultatoPaginato = new RisultatoPaginato<TDto>
             {
                 Elementi = dtos,
                 NumeroPagina = numeroPagina,
                 DimensionePagina = dimensionePagina,
                 TotaleElementi = totaleElementi,
-                TotalePagine = totaleElementi / dimensionePagina
+                TotalePagine = totalePagine
             };
 
             return risultatoPaginato;
 
         }
 
+        /// <summary>
+        /// Crea una nuova entità
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         public virtual TDto CreaData(TDto dto)
         {
             var data = MapInData(dto);
@@ -68,7 +82,7 @@ namespace RestApi.Core.Astratte
         /// Aggiorna un'entità esistente
         /// </summary>
         public virtual TDto? Aggiorna(int id, TDto dto)
-        {          
+        {
 
             if (!db.ContainsKey(id))
                 return null;
@@ -96,7 +110,19 @@ namespace RestApi.Core.Astratte
         /// <param name="entita"></param>
         /// <returns></returns>
         protected abstract TDto MapInDto(TEntity entita);
+
+        /// <summary>
+        /// Mappa un Dto nella sua entità corrispondente
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         protected abstract TEntity MapInData(TDto data);
+
+        /// <summary>
+        /// Imposta l'ID dell'entità
+        /// </summary>
+        /// <param name="entita"></param>
+        /// <param name="id"></param>
         protected abstract void ImpostaIdEntita(TEntity entita, int id);
     }
 }

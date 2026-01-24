@@ -19,7 +19,7 @@ namespace RestApi.Service
         {
             return new Utente
             {
-                Id = data.Id,
+                Id = data.Id ?? 0,
                 Nome = data.Nome,
                 Email = data.Email,
             };
@@ -35,6 +35,6 @@ namespace RestApi.Service
             };
         }
 
-        
+
     }
 }

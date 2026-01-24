@@ -26,7 +26,7 @@ namespace RestApi.Controllers
         {
             if (numeroPagina < 1 || dimensionePagina < 1)
             {
-                return BadRequest("Il numero di pagina e la dimensione devono essere maggiori di zero")
+                return BadRequest("Il numero di pagina e la dimensione devono essere maggiori di zero");
             }
 
             var risultato = _servizioUtente.OttieniTutti(numeroPagina, dimensionePagina);

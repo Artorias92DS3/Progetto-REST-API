@@ -17,7 +17,7 @@ namespace RestApi.Service
         {
             return new Prodotto
             {
-                Id = data.Id,
+                Id = data.Id ?? 0,
                 Nome = data.Nome,
                 Prezzo = data.Prezzo,
             };
